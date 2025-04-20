@@ -3,10 +3,9 @@ services:
     name: finpredictor
     env: python
     buildCommand: |
-      apt-get update -y
-      apt-get install -y build-essential python3-dev
-      pip install --upgrade pip
-      pip install -r requirements.txt
+      python -m pip install --upgrade pip
+      pip cache purge
+      pip install --no-cache-dir -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
       - key: FLASK_ENV
