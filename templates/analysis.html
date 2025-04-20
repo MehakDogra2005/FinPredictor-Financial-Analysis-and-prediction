@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis | FinPredictor</title>
+    <style>
+        :root {
+            --primary-blue: #1565c0;
+            --dark-blue: #0d47a1;
+            --light-blue: #e3f2fd;
+            --accent-blue: #42a5f5;
+            --text-dark: #212121;
+            --text-light: #757575;
+            --white: #ffffff;
+            --success-green: #4caf50;
+            --warning-orange: #ff9800;
+            --error-red: #f44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: #f5f9ff;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(13, 71, 161, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-right: 10px;
+            color: var(--primary-blue);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-blue);
+        }
+        
+        .login-btn {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(21, 101, 192, 0.3);
+        }
+        
+        .login-btn:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(21, 101, 192, 0.3);
+        }
+        
+        /* Analysis Section */
+        .analysis-section {
+            padding: 180px 0 100px;
+            min-height: 100vh;
+        }
+        
+        .analysis-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        .analysis-form {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .analysis-form h2 {
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 2px rgba(66, 165, 245, 0.2);
+        }
+        
+        .submit-btn {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(21, 101, 192, 0.3);
+        }
+        
+        .results-container {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .results-container h2 {
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+        }
+        
+        .result-card {
+            background-color: var(--light-blue);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .result-card h3 {
+            margin-bottom: 10px;
+            color: var(--dark-blue);
+        }
+        
+        .prediction-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .value-stock {
+            color: var(--success-green);
+        }
+        
+        .not-value-stock {
+            color: var(--error-red);
+        }
+        
+        .feature-importance {
+            margin-top: 20px;
+        }
+        
+        .feature-importance h3 {
+            margin-bottom: 10px;
+        }
+        
+        .feature-bar {
+            height: 20px;
+            background-color: var(--accent-blue);
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+        
+        .feature-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-blue);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            color: var(--error-red);
+            margin-top: 10px;
+            display: none;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .analysis-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header with Login Button -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="/" class="logo">
+                    <i class="fas fa-search-dollar logo-icon"></i>
+                    FinPredictor
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/#how-it-works">How It Works</a></li>
+                    <li><a href="/analysis.html">Analyzer</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+                <button class="login-btn" onclick="openLoginModal()">
+                    <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>Log In
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Analysis Section -->
+    <section class="analysis-section">
+        <div class="container">
+            <div class="analysis-container">
+                <!-- Analysis Form -->
+                <div class="analysis-form">
+                    <h2>Stock Analysis</h2>
+                    <p>Enter the financial metrics of the stock you want to analyze.</p>
+                    <form id="analysis-form">
+                        <div class="form-group">
+                            <label for="pe">P/E Ratio</label>
+                            <input type="number" id="pe" name="pe" step="0.01" required placeholder="e.g., 15.2">
+                        </div>
+                        <div class="form-group">
+                            <label for="pb">P/B Ratio</label>
+                            <input type="number" id="pb" name="pb" step="0.01" required placeholder="e.g., 2.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="roe">Return on Equity (%)</label>
+                            <input type="number" id="roe" name="roe" step="0.01" required placeholder="e.g., 18.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="ebitdaGrowth">EBITDA 1-Year Growth (%)</label>
+                            <input type="number" id="ebitdaGrowth" name="ebitdaGrowth" step="0.01" required placeholder="e.g., 12.3">
+                        </div>
+                        <div class="form-group">
+                            <label for="salesGrowth">Sales 5-Year CAGR (%)</label>
+                            <input type="number" id="salesGrowth" name="salesGrowth" step="0.01" required placeholder="e.g., 8.7">
+                        </div>
+                        <button type="submit" class="submit-btn">Analyze Stock</button>
+                        <div class="error-message" id="error-message"></div>
+                    </form>
+                </div>
+                
+                <!-- Results Container -->
+                <div class="results-container">
+                    <h2>Analysis Results</h2>
+                    <div class="loading" id="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Analyzing stock data...</p>
+                    </div>
+                    <div id="results" style="display: none;">
+                        <div class="result-card">
+                            <h3>Value Stock Prediction</h3>
+                            <div class="prediction-value" id="prediction-value"></div>
+                            <p id="prediction-description"></p>
+                        </div>
+                        
+                        <!-- Feature importance section removed -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript for Analysis -->
+    <script>
+        // Login modal function
+        function openLoginModal() {
+            // In a real implementation, this would open a login modal
+            alert("Login functionality would appear here.\nThis would connect to your authentication system.");
+        }
+        
+        // Form submission handler
+        document.getElementById('analysis-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading spinner
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';
+            
+            // Get form data
+            const formData = {
+                'P/E_Ratio': parseFloat(document.getElementById('pe').value),
+                'P/B_Ratio': parseFloat(document.getElementById('pb').value),
+                'ROE': parseFloat(document.getElementById('roe').value) / 100, // Convert to decimal
+                'EBITDA_Growth': parseFloat(document.getElementById('ebitdaGrowth').value) / 100, // Convert to decimal
+                'Sales_Growth': parseFloat(document.getElementById('salesGrowth').value) / 100 // Convert to decimal
+            };
+            
+            // Send data to API
+            fetch('/api/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading spinner
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.success) {
+                    // Show results
+                    document.getElementById('results').style.display = 'block';
+                    
+                    // Update prediction
+                    const predictionValue = document.getElementById('prediction-value');
+                    const predictionDescription = document.getElementById('prediction-description');
+                    
+                    if (data.is_value_stock) {
+                        predictionValue.textContent = 'VALUE STOCK';
+                        predictionValue.className = 'prediction-value value-stock';
+                        predictionDescription.textContent = data.message || 'Based on our analysis, this stock is considered undervalued and may present a good investment opportunity.';
+                    } else {
+                        predictionValue.textContent = 'NOT A VALUE STOCK';
+                        predictionValue.className = 'prediction-value not-value-stock';
+                        predictionDescription.textContent = data.message || 'This stock is not considered a value stock based on our analysis.';
+                    }
+                    
+                    // Feature importance section removed
+                } else {
+                    // Show error message
+                    document.getElementById('error-message').textContent = data.error || 'An error occurred during analysis.';
+                    document.getElementById('error-message').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                // Hide loading spinner
+                document.getElementById('loading').style.display = 'none';
+                
+                // Show error message
+                document.getElementById('error-message').textContent = 'An error occurred while connecting to the server.';
+                document.getElementById('error-message').style.display = 'block';
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html> 
